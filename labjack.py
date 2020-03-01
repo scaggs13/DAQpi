@@ -15,7 +15,7 @@ POLY_HV_CONVERSION_ADD = -10.313406
 ORDER_MONO = ["MonoP1v", "MonoP2v", "MonoP3v", "A3", "MonoP1i", "MonoP2i", "MonoP3i", "F7"]
 MONO_HV_CONVERSION_MULT = 8.555073
 MONO_HV_CONVERSION_ADD = -10.472785
-CONVERSION = [1, 1, 1, 1, 1, 1, 1, 1]
+CONVERSION = [1, 1, 1, 1, 1, 1, 1, 1] # todo: change these values
 
 # Open Mono Panels' LabJack
 dm = u3.U3(autoOpen=False)
@@ -26,9 +26,10 @@ dm.configIO(FIOAnalog=255)  # Set every input to analog
 dp = u3.U3(autoOpen=False)
 dp.open(handleOnly=True, serial=320087751)
 dp.configIO(FIOAnalog=255)  # Set every input to analog
-dp.writeRegister(5000, 3) # testing
+# dp.writeRegister(5000, 3) # testing
 
-def collectDataPanels():
+
+def collect_data_panels():
     # Collect data first time
     for x in range(0, 8):
         tmp_poly.append(dp.getAIN(x))
@@ -54,7 +55,7 @@ def collectDataPanels():
     # Dump JSON
     json_data = json.dumps(tmp_json)
     ws.send_solar(json_data)
-    print(json_data)
+    print(json_data) # todo: get rid of this line.
     # Clear temp lists
     del tmp_poly[:]
     del tmp_mono[:]
