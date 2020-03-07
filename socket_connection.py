@@ -1,14 +1,17 @@
 import socketio
+import time
 
 sio = socketio.Client();
-try:
-    sio.connect("http://localhost:3000")
-except socketio.exceptions.ConnectionError:
-    print("Socket connection error.")
+connected = False;
+while not connected:
+    try:
+        sio.connect("50.17.173.72:3000")
+        sio.emit('new_connect', 'daq_solar')
+        connected = True;
+    except socketio.exceptions.ConnectionError:
+        print("Socket connection error.")
+        time.sleep(5)
 
-@sio.on("connect")
-def on_connect():
-    sio.emit('new_connect', 'daq_solar')
 
 @sio.on("")
 def on_message(data):
@@ -20,4 +23,4 @@ def send_solar(data):
 
 
 def send_err(msg):
-    sio.emit('err_msg', msg)
+    sio.emit('err_msg', ['DAQpi:', msg])

@@ -24,7 +24,7 @@ POLY_HV_CONVERSION_ADD = -10.313406
 ORDER_MONO = ["MonoP1v", "MonoP2v", "MonoP3v", "A3", "MonoP1i", "MonoP2i", "MonoP3i", "F7"]
 MONO_HV_CONVERSION_MULT = 8.555073
 MONO_HV_CONVERSION_ADD = -10.472785
-CONVERSION = [1, 1, 1, 1, 1, 1, 1, 1] # todo: change these values
+CONVERSION = [1, 1, 1, 1, 1, 1, 1, 1]  # todo: change these values
 # todo: error checking
 
 
@@ -39,7 +39,11 @@ def open_labjacks():
             dm_connect = True;
     except LabJackException:
         print("Connection Error to LabJack: Cannot find Mono LabJack")
-        ws.send_err('DAQpi Error: Cannot find Mono LabJack');
+        if dm:
+            dm.close()
+        if dp:
+            dp.close()
+        ws.send_err('Cannot find Mono LabJack');
         return False
     try:
         if not dp_connect:
@@ -51,7 +55,11 @@ def open_labjacks():
             dp_connect = True;
     except LabJackException:
         print("Connection Error to LabJack: Cannot find Poly LabJack")
-        ws.send_err('DAQpi Error: Cannot find Poly LabJack');
+        if dm:
+            dm.close()
+        if dp:
+            dp.close()
+        ws.send_err('Cannot find Poly LabJack');
         return False
     return True
 
@@ -61,13 +69,13 @@ def collect_data_panels():
         try:
             # Collect data first time
             for x in range(0, 8):
-                tmp_poly.append(dp.getAIN(x))
-                tmp_mono.append(dm.getAIN(x))
+                tmp_poly.append(dp.getAIN(x, 32))
+                tmp_mono.append(dm.getAIN(x, 32))
             # Get average of 100 data points
             for x in range(0, 100):
                 for y in range(0, 8):
-                    tmp_poly[y] = (tmp_poly[y] + dp.getAIN(y)) / 2
-                    tmp_mono[y] = (tmp_mono[y] + dm.getAIN(y)) / 2
+                    tmp_poly[y] = (tmp_poly[y] + dp.getAIN(y, 32)) / 2
+                    tmp_mono[y] = (tmp_mono[y] + dm.getAIN(y, 32)) / 2
             # Convert Values
             for x in range(0, 8):
                 if x < 4:
