@@ -5,7 +5,7 @@ sio = socketio.Client();
 connected = False;
 while not connected:
     try:
-        sio.connect("50.17.173.72:3000")
+        sio.connect("http://50.17.173.72:3000")
         sio.emit('new_connect', 'daq_solar')
         connected = True;
     except socketio.exceptions.ConnectionError:
