@@ -1,6 +1,7 @@
 import u3
 import json
 import socket_connection as ws
+import mate as mate
 from LabJackPython import LabJackException
 
 global dm_connect, dp_connect, dm, dp
@@ -88,10 +89,12 @@ def collect_data_panels():
                 data_poly[x] = tmp_poly[ORDER_POLY.index(x)]
             for x in data_mono:
                 data_mono[x] = tmp_mono[ORDER_MONO.index(x)]
+
             tmp_json = {"Mono": data_mono, "Poly": data_poly}
+            mate.addmate3data(tmp_json)
             # Dump JSON
-            json_data = json.dumps(tmp_json)
-            ws.send_solar(json_data)
+            # json_data = json.dumps(tmp_json)
+            # ws.send_solar(json_data)
             print(json_data) # todo: get rid of this line.
             # Clear temp lists
             del tmp_poly[:]
