@@ -111,7 +111,7 @@ def collect_data_panels():
             # Dump JSON
             # json_data = json.dumps(tmp_json)
             # ws.send_solar(json_data)
-            print(json_data) # todo: get rid of this line.
+            # print(json_data) # todo: get rid of this line.
             # Clear temp lists
             del tmp_poly[:]
             del tmp_mono[:]
