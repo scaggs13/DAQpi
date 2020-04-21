@@ -20,12 +20,28 @@ dp_connect = False
 
 # Define conversion factors
 ORDER_POLY = ["PolyP1v", "PolyP2v", "PolyP3v", "A3", "PolyP1i", "PolyP2i", "PolyP3i", "F7"]
-POLY_HV_CONVERSION_MULT = 8.425154
-POLY_HV_CONVERSION_ADD = -10.313406
+# Insert Conversion Factors here
+# For High Voltage Conversion
+POLY_HV_CONVERSION_ADD1 = 0            # Add before multiply
+POLY_HV_CONVERSION_MULT = 8.425154     # multiply factor
+POLY_HV_CONVERSION_ADD2 = -10.313406   # Add after multiply
 ORDER_MONO = ["MonoP1v", "MonoP2v", "MonoP3v", "A3", "MonoP1i", "MonoP2i", "MonoP3i", "F7"]
-MONO_HV_CONVERSION_MULT = 8.555073
-MONO_HV_CONVERSION_ADD = -10.472785
-CONVERSION = [1, 1, 1, 1, 1, 1, 1, 1]  # todo: change these values
+# Insert Conversion Factors here
+# For High Voltage Conversion
+MONO_HV_CONVERSION_ADD1 = 0             # Add before multiply
+MONO_HV_CONVERSION_MULT = 8.555073      # multiply factor
+MONO_HV_CONVERSION_ADD2 = -10.472785    # Add after multiply
+
+# Sensor conversions
+# Poly Order follows ORDER_POLY variable above
+CONVERSION_POLY_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
+CONVERSION_POLY_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
+CONVERSION_POLY_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
+
+# Poly Order follows ORDER_MONO variable above
+CONVERSION_MONO_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
+CONVERSION_MONO_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
+CONVERSION_MONO_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
 # todo: error checking
 
 
@@ -80,10 +96,10 @@ def collect_data_panels():
             # Convert Values
             for x in range(0, 8):
                 if x < 4:
-                    tmp_poly[x] = tmp_poly[x]*POLY_HV_CONVERSION_MULT+POLY_HV_CONVERSION_ADD
-                    tmp_mono[x] = tmp_mono[x]*MONO_HV_CONVERSION_MULT+MONO_HV_CONVERSION_ADD
-                tmp_poly[x] = tmp_poly[x] * CONVERSION[x]
-                tmp_mono[x] = tmp_mono[x] * CONVERSION[x]
+                    tmp_poly[x] = (tmp_poly[x] + POLY_HV_CONVERSION_ADD1) * POLY_HV_CONVERSION_MULT + POLY_HV_CONVERSION_ADD2
+                    tmp_mono[x] = (tmp_mono[x] + MONO_HV_CONVERSION_ADD1) * MONO_HV_CONVERSION_MULT + MONO_HV_CONVERSION_ADD2
+                tmp_poly[x] = (tmp_poly[x] + CONVERSION_POLY_ADD1[x]) * CONVERSION_POLY_MULT[x] + CONVERSION_POLY_ADD2[x]
+                tmp_mono[x] = (tmp_mono[x] + CONVERSION_MONO_ADD1[x]) * CONVERSION_POLY_MULT[x] + CONVERSION_MONO_ADD2[x]
             # Save to JSON Object
             for x in data_poly:
                 data_poly[x] = tmp_poly[ORDER_POLY.index(x)]
