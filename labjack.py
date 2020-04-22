@@ -4,7 +4,7 @@ import socket_connection as ws
 import mate as mate
 from LabJackPython import LabJackException
 
-
+global dm, dp, dm_connect, dp_connect
 dm = None
 dp = None
 

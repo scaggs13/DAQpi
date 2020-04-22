@@ -3,6 +3,7 @@ import json
 import socket_connection as ws
 from LabJackPython import LabJackException
 
+global d1, d2, d1_connect, d2_connect
 
 d1 = None
 d2 = None
