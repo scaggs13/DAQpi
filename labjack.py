@@ -122,13 +122,11 @@ def collect_data_panels():
             try:
                 dp.getAIN(0)
             except:
-                global dp_connect
                 dp_connect = False
                 dp.close()
             try:
                 dm.getAIN(0)
             except:
-                global dm_connect
                 dm_connect = False
                 dm.close()
     else:

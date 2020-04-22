@@ -121,13 +121,11 @@ def collect_data():
             try:
                 d2.getAIN(0)
             except:
-                global d2_connect
                 d2_connect = False
                 d2.close()
             try:
                 d1.getAIN(0)
             except:
-                global d1_connect
                 d1_connect = False
                 d1.close()
     else:
