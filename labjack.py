@@ -4,9 +4,9 @@ import socket_connection as ws
 import mate as mate
 from LabJackPython import LabJackException
 
-global dm_connect, dp_connect, dm, dp
-dm = None;
-dp = None;
+
+dm = None
+dp = None
 
 # Define JSON
 data_poly = {"PolyP1v": 0, "PolyP2v": 0, "PolyP3v": 0, "A3": 0, "PolyP1i": 0, "PolyP2i": 0, "PolyP3i": 0, "F7": 0}
@@ -17,6 +17,7 @@ tmp_mono = []
 
 dm_connect = False
 dp_connect = False
+
 
 # Define conversion factors
 ORDER_POLY = ["PolyP1v", "PolyP2v", "PolyP3v", "A3", "PolyP1i", "PolyP2i", "PolyP3i", "F7"]
@@ -53,14 +54,14 @@ def open_labjacks():
             dm = u3.U3(autoOpen=False)
             dm.open(handleOnly=True, serial=320090158)
             dm.configIO(FIOAnalog=255)  # Set every input to analog
-            dm_connect = True;
+            dm_connect = True
     except LabJackException:
         print("Connection Error to LabJack: Cannot find Mono LabJack")
         if dm:
             dm.close()
         if dp:
             dp.close()
-        ws.send_err('Cannot find Mono LabJack');
+        ws.send_err('Cannot find Mono LabJack')
         return False
     try:
         if not dp_connect:
@@ -69,19 +70,20 @@ def open_labjacks():
             dp.open(handleOnly=True, serial=320087751)
             dp.configIO(FIOAnalog=255)  # Set every input to analog
             # dp.writeRegister(5000, 3) # testing
-            dp_connect = True;
+            dp_connect = True
     except LabJackException:
         print("Connection Error to LabJack: Cannot find Poly LabJack")
         if dm:
             dm.close()
         if dp:
             dp.close()
-        ws.send_err('Cannot find Poly LabJack');
+        ws.send_err('Cannot find Poly LabJack')
         return False
     return True
 
 
 def collect_data_panels():
+    global dm_connect, dp_connect
     if dm_connect and dp_connect:
         try:
             # Collect data first time

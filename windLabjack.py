@@ -1,141 +1,141 @@
 import u3
 import json
 import socket_connection as ws
-import mate as mate
 from LabJackPython import LabJackException
 
-global dm_connect, dp_connect, dm, dp
-dm = None;
-dp = None;
+
+d1 = None
+d2 = None
 
 # Define JSON
-data_poly = {"PolyP1v": 0, "PolyP2v": 0, "PolyP3v": 0, "A3": 0, "PolyP1i": 0, "PolyP2i": 0, "PolyP3i": 0, "F7": 0}
-tmp_poly = []
+data_3phase = {"P31_V": 0, "P32_V": 0, "P33_V": 0, "A3": 0, "P31_I": 0, "P32_I": 0, "P33_I": 0, "F7": 0}
+tmp_3phase = []
 
-data_mono = {"MonoP1v": 0, "MonoP2v": 0, "MonoP3v": 0, "A3": 0, "MonoP1i": 0, "MonoP2i": 0, "MonoP3i": 0, "F7": 0}
-tmp_mono = []
+data_load = {"Load_V": 0, "Batt_V": 0, "A2": 0, "A3": 0, "Load_I": 0, "Batt_I": 0, "F6": 0, "F7": 0}
+tmp_load = []
 
-dm_connect = False
-dp_connect = False
+d1_connect = False
+d2_connect = False
 
 # Define conversion factors
-ORDER_POLY = ["PolyP1v", "PolyP2v", "PolyP3v", "A3", "PolyP1i", "PolyP2i", "PolyP3i", "F7"]
+ORDER_3P = ["P31_V", "P32_V", "P33_V", "A3", "P31_I", "P32_I", "P33_I", "F7"]
 # Insert Conversion Factors here
 # For High Voltage Conversion
-POLY_HV_CONVERSION_ADD1 = 0            # Add before multiply
-POLY_HV_CONVERSION_MULT = 8.425154     # multiply factor
-POLY_HV_CONVERSION_ADD2 = -10.313406   # Add after multiply
-ORDER_MONO = ["MonoP1v", "MonoP2v", "MonoP3v", "A3", "MonoP1i", "MonoP2i", "MonoP3i", "F7"]
+P3_HV_CONVERSION_ADD1 = 0            # Add before multiply
+P3_HV_CONVERSION_MULT = 8.425154     # multiply factor
+P3_HV_CONVERSION_ADD2 = -10.313406   # Add after multiply
+ORDER_LOAD = ["Load_V", "Batt_V", "A2", "A3", "Load_I", "Batt_I", "F6", "F7"]
 # Insert Conversion Factors here
 # For High Voltage Conversion
-MONO_HV_CONVERSION_ADD1 = 0             # Add before multiply
-MONO_HV_CONVERSION_MULT = 8.555073      # multiply factor
-MONO_HV_CONVERSION_ADD2 = -10.472785    # Add after multiply
+LOAD_HV_CONVERSION_ADD1 = 0             # Add before multiply
+LOAD_HV_CONVERSION_MULT = 8.555073      # multiply factor
+LOAD_HV_CONVERSION_ADD2 = -10.472785    # Add after multiply
 
 # Sensor conversions
-# Poly Order follows ORDER_POLY variable above
-CONVERSION_POLY_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
-CONVERSION_POLY_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
-CONVERSION_POLY_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
+# Three Phase Order follows ORDER_3P variable above
+CONVERSION_P3_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
+CONVERSION_P3_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
+CONVERSION_P3_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
 
-# Poly Order follows ORDER_MONO variable above
-CONVERSION_MONO_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
-CONVERSION_MONO_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
-CONVERSION_MONO_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
+# Load Order follows ORDER_LOAD variable above
+CONVERSION_LOAD_MULT = [1, 1, 1, 1, 1, 1, 1, 1]  # Multiply factor for sensors. todo: change these values
+CONVERSION_LOAD_ADD1 = [0, 0, 0, 0, 0, 0, 0, 0] # Add before multiply
+CONVERSION_LOAD_ADD2 = [0, 0, 0, 0, 0, 0, 0, 0] # Add after multiply
 # todo: error checking
 
 
 def open_labjacks():
-    global dm, dp, dp_connect, dm_connect
+    global d1, d2, d2_connect, d1_connect
     try:
-        if not dm_connect:
-            # Open Mono Panels' LabJack
-            dm = u3.U3(autoOpen=False)
-            dm.open(handleOnly=True, serial=320090158)
-            dm.configIO(FIOAnalog=255)  # Set every input to analog
-            dm_connect = True;
+        if not d1_connect:
+            # Open Load LabJack
+            d1 = u3.U3(autoOpen=False)
+            d1.open(handleOnly=True, serial=320090158)  # Change this to match serial of Load labjack.(Connected to Load and Battery)
+            d1.configIO(FIOAnalog=255)  # Set every input to analog
+            d1_connect = True;
     except LabJackException:
-        print("Connection Error to LabJack: Cannot find Mono LabJack")
-        if dm:
-            dm.close()
-        if dp:
-            dp.close()
-        ws.send_err('Cannot find Mono LabJack');
+        print("Connection Error to LabJack: Cannot find Load LabJack")
+        if d1:
+            d1.close()
+        if d2:
+            d2.close()
+        ws.send_err('Cannot find Load LabJack');
         return False
     try:
-        if not dp_connect:
+        if not d2_connect:
             # Open Poly Panels' LabJack
-            dp = u3.U3(autoOpen=False)
-            dp.open(handleOnly=True, serial=320087751)
-            dp.configIO(FIOAnalog=255)  # Set every input to analog
+            d2 = u3.U3(autoOpen=False)
+            d2.open(handleOnly=True, serial=320087751)  # Change this to match serial of 3 Phase Labjack
+            d2.configIO(FIOAnalog=255)  # Set every input to analog
             # dp.writeRegister(5000, 3) # testing
-            dp_connect = True;
+            d2_connect = True;
     except LabJackException:
-        print("Connection Error to LabJack: Cannot find Poly LabJack")
-        if dm:
-            dm.close()
-        if dp:
-            dp.close()
-        ws.send_err('Cannot find Poly LabJack');
+        print("Connection Error to LabJack: Cannot find 3 phase LabJack")
+        if d1:
+            d1.close()
+        if d2:
+            d2.close()
+        ws.send_err('Cannot find 3 phase LabJack');
         return False
     return True
 
 
-def collect_data_panels():
-    if dm_connect and dp_connect:
+def collect_data():
+    global d1_connect, d2_connect
+    if d1_connect and d2_connect:
         try:
             # Collect data first time
             for x in range(0, 8):
-                tmp_poly.append(dp.getAIN(x, 32))
-                tmp_mono.append(dm.getAIN(x, 32))
+                tmp_3phase.append(d2.getAIN(x, 32))
+                tmp_load.append(d1.getAIN(x, 32))
             # Get average of 100 data points
             for x in range(0, 100):
                 for y in range(0, 8):
-                    tmp_poly[y] = (tmp_poly[y] + dp.getAIN(y, 32)) / 2
-                    tmp_mono[y] = (tmp_mono[y] + dm.getAIN(y, 32)) / 2
+                    tmp_3phase[y] = (tmp_3phase[y] + d2.getAIN(y, 32)) / 2
+                    tmp_load[y] = (tmp_load[y] + d1.getAIN(y, 32)) / 2
             # Convert Values
             for x in range(0, 8):
                 if x < 4:
-                    tmp_poly[x] = (tmp_poly[x] + POLY_HV_CONVERSION_ADD1) * POLY_HV_CONVERSION_MULT + POLY_HV_CONVERSION_ADD2
-                    tmp_mono[x] = (tmp_mono[x] + MONO_HV_CONVERSION_ADD1) * MONO_HV_CONVERSION_MULT + MONO_HV_CONVERSION_ADD2
-                tmp_poly[x] = (tmp_poly[x] + CONVERSION_POLY_ADD1[x]) * CONVERSION_POLY_MULT[x] + CONVERSION_POLY_ADD2[x]
-                tmp_mono[x] = (tmp_mono[x] + CONVERSION_MONO_ADD1[x]) * CONVERSION_POLY_MULT[x] + CONVERSION_MONO_ADD2[x]
+                    tmp_3phase[x] = (tmp_3phase[x] + P3_HV_CONVERSION_ADD1) * P3_HV_CONVERSION_MULT + P3_HV_CONVERSION_ADD2
+                    tmp_load[x] = (tmp_load[x] + LOAD_HV_CONVERSION_ADD1) * LOAD_HV_CONVERSION_MULT + LOAD_HV_CONVERSION_ADD2
+                tmp_3phase[x] = (tmp_3phase[x] + CONVERSION_P3_ADD1[x]) * CONVERSION_P3_MULT[x] + CONVERSION_P3_ADD2[x]
+                tmp_load[x] = (tmp_load[x] + CONVERSION_LOAD_ADD1[x]) * CONVERSION_P3_MULT[x] + CONVERSION_LOAD_ADD2[x]
             # Save to JSON Object
-            for x in data_poly:
-                data_poly[x] = tmp_poly[ORDER_POLY.index(x)]
-            for x in data_mono:
-                data_mono[x] = tmp_mono[ORDER_MONO.index(x)]
+            for x in data_3phase:
+                data_3phase[x] = tmp_3phase[ORDER_3P.index(x)]
+            for x in data_load:
+                data_load[x] = tmp_load[ORDER_LOAD.index(x)]
 
-            tmp_json = {"Mono": data_mono, "Poly": data_poly}
-            mate.addmate3data(tmp_json)
+            tmp_json = {"P31_V": tmp_3phase[0], "P32_V": tmp_3phase[1], "P33_V": tmp_3phase[2], "A3": tmp_3phase[3], "P31_I": tmp_3phase[4], "P32_I": tmp_3phase[5], "P33_I": tmp_3phase[6], "F7": tmp_3phase[07],
+                        "Load_V": tmp_load[0], "Batt_V": tmp_load[1], "A2": tmp_load[2], "A3": tmp_load[3], "Load_I": tmp_load[4], "Batt_I": tmp_load[5], "F6": tmp_load[6], "F7": tmp_load[7]}
             # Dump JSON
-            # json_data = json.dumps(tmp_json)
-            # ws.send_solar(json_data)
+            json_data = json.dumps(tmp_json)
+            ws.send_wind(json_data)
             # print(json_data) # todo: get rid of this line.
             # Clear temp lists
-            del tmp_poly[:]
-            del tmp_mono[:]
+            del tmp_3phase[:]
+            del tmp_load[:]
         except:
             print("error")
             try:
-                dp.getAIN(0)
+                d2.getAIN(0)
             except:
-                global dp_connect
-                dp_connect = False
-                dp.close()
+                global d2_connect
+                d2_connect = False
+                d2.close()
             try:
-                dm.getAIN(0)
+                d1.getAIN(0)
             except:
-                global dm_connect
-                dm_connect = False
-                dm.close()
+                global d1_connect
+                d1_connect = False
+                d1.close()
     else:
-        if not dm_connect:
-            print("Mono labjack not connected")
-        if not dp_connect:
-            print("Poly labjack not connected")
+        if not d1_connect:
+            print("Load labjack not connected")
+        if not d2_connect:
+            print("3 Phase labjack not connected")
 
 
 def __del__(self):
-    dm.close() # Close Mono Panels' LabJack
-    dp.close() # Close Poly Panels' LabJack
+    d1.close() # Close Mono Panels' LabJack
+    d2.close() # Close Poly Panels' LabJack
