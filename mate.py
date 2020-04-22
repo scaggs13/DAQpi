@@ -28,10 +28,10 @@ def addmate3data(jsonFile):
             if battery[x] == "Batt_temp":
                 tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
             jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
-        for x in range(0, len(chargeController) - 1):
+        for x in range(0, len(chargeController)):
             jsonFile.ChargeControllerM[chargeController[x]] = tmpMCC[chargeController[x]]
             jsonFile.ChargeControllerP[chargeController[x]] = tmpPCC[chargeController[x]]
-        for x in range(0, len(inverter) - 1):
+        for x in range(0, len(inverter)):
             jsonFile.Inverter[inverter[x]] = tmpInv[inverter[x]]
 
     except requests.exceptions.RequestException as e:
@@ -44,5 +44,4 @@ def addmate3data(jsonFile):
             jsonFile['Inverter'][inverter[x]] = 0
 
     json_data = json.dumps(jsonFile)
-    print json_data
     lj.ws.send_solar(json_data)

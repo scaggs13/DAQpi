@@ -22,6 +22,10 @@ def on_message(data):
 def send_solar(data):
     sio.emit('daq_solar', data)
 
+    
+def send_wind(data):
+    sio.emit('daq_wind', data)
+
 
 def send_err(msg):
     sio.emit('err_msg', ['DAQpi:', msg])
