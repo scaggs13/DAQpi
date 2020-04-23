@@ -32,7 +32,8 @@ def addmate3data(jsonFile):
         if tmpBatt:
             for x in range(0, len(battery) - 1):
                 if battery[x] == "Batt_temp":
-                    tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
+                    if tmpBatt[battery[x]] != "###":
+                        tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
                 jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
         for x in range(0, len(chargeController)):
             if tmpMCC:
