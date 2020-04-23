@@ -60,7 +60,6 @@ def addmate3data(jsonFile):
         else:
             for x in range(len(inverter)):
                 jsonFile['Inverter'][inverter[x]] = 0.0
-        print(jsonFile)
     except requests.exceptions.RequestException as e:
         print e
         jsonFile['Battery'] = {"Shunt_A_I": 0, "Shunt_A_AH": 0, "Shunt_A_kWh": 0.0, "SOC": 0, "Min_SOC": 0, "Days_since_full": 0.0,"CHG_parms_met": False, "In_AH_today": 0, "Out_AH_today": 0, "In_kWh_today": 0.0, "Out_kWh_today": 0.0, "Net_CFC_AH": 0, "Net_CFC_kWh": 0.0, "Batt_V": 0.0, "Batt_temp": 0.0}
@@ -70,6 +69,5 @@ def addmate3data(jsonFile):
         for x in range(len(inverter)):
             jsonFile['Inverter'][inverter[x]] = 0
 
-    print(jsonFile)
     json_data = json.dumps(jsonFile)
     lj.ws.send_solar(json_data)
