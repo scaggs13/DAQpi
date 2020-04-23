@@ -23,6 +23,8 @@ def addmate3data(jsonFile):
         print(data)
         print(data[0])
         print(data['devstatus']['ports'])
+        for x in range(0, len(data)):
+            print x
         for x in range(0, len(data['ports'])):
             if data['ports'][x]['Port'] == 4:
                 tmpBatt = data['ports'][x]  # Battery
