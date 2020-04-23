@@ -6,6 +6,7 @@ mateIP = '173.218.91.129:3000'
 httpCall = 'http://' + mateIP + '/Dev_status.cgi'
 PARAMS = {'Port': 0}
 
+global battery, chargeController, inverter
 battery = ["Shunt_A_I", "Shunt_A_AH", "Shunt_A_kWh", "Shunt_B_I", "Shunt_B_AH", "Shunt_B_kWh", "SOC", "Min_SOC", "Days_since_full","CHG_parms_met", "In_AH_today", "Out_AH_today", "In_kWh_today", "Out_kWh_today", "Net_CFC_AH", "Net_CFC_kWh", "Batt_V", "Batt_temp"]
 chargeController = ["Out_I", "In_I", "Batt_V", "In_V", "Out_kWh", "Out_AH"]
 inverter = ["Inv_I", "Chg_I", "Buy_I", "Sell_I", "VAC_in", "VAC_out", "Batt_V"]
@@ -20,7 +21,6 @@ def addmate3data(jsonFile):
         data = r.json()
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
-        print(data['devstatus']['ports'])
         for x in range(0, len(data)):
             print x
         for x in range(0, len(data['devstatus']['ports'])):
@@ -34,6 +34,7 @@ def addmate3data(jsonFile):
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
         print(tmpBatt)
         if tmpBatt:
+            print battery
             for x in range(0, len(battery)):
                 if battery[x] == "Batt_temp":
                     if tmpBatt[battery[x]] != "###":
