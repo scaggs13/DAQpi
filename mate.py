@@ -31,9 +31,7 @@ def addmate3data(jsonFile):
                 tmpMCC = data['devstatus']['ports'][x]  # Mono Charge Controller
             if data['devstatus']['ports'][x]['Port'] == 1:
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
-        print(tmpBatt)
         if tmpBatt:
-            print battery
             for x in range(0, len(battery)):
                 if battery[x] == "Batt_temp":
                     if tmpBatt[battery[x]] != "###":
@@ -49,7 +47,7 @@ def addmate3data(jsonFile):
         if tmpInv:
             for x in range(0, len(inverter)):
                 jsonFile['Inverter'][inverter[x]] = tmpInv[inverter[x]]
-
+        print(jsonFile)
     except requests.exceptions.RequestException as e:
         print e
         jsonFile['Battery'] = {"Shunt_A_I": 0, "Shunt_A_AH": 0, "Shunt_A_kWh": 0.0, "Shunt_B_I": 0.0, "Shunt_B_AH": 0, "Shunt_B_kWh": 0.000, "SOC": 0, "Min_SOC": 0, "Days_since_full": 0.0,"CHG_parms_met": False, "In_AH_today": 0, "Out_AH_today": 0, "In_kWh_today": 0.0, "Out_kWh_today": 0.0, "Net_CFC_AH": 0, "Net_CFC_kWh": 0.0, "Batt_V": 0.0, "Batt_temp": 0.0}
@@ -58,6 +56,7 @@ def addmate3data(jsonFile):
             jsonFile['ChargeControllerM'][chargeController[x]] = 0.0
         for x in range(len(inverter)):
             jsonFile['Inverter'][inverter[x]] = 0
+
     print(jsonFile)
     json_data = json.dumps(jsonFile)
     lj.ws.send_solar(json_data)
