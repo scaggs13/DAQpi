@@ -6,7 +6,6 @@ mateIP = '173.218.91.129:3000'
 httpCall = 'http://' + mateIP + '/Dev_status.cgi'
 PARAMS = {'Port': 0}
 
-global battery, chargeController, inverter
 battery = ["Shunt_A_I", "Shunt_A_AH", "Shunt_A_kWh", "Shunt_B_I", "Shunt_B_AH", "Shunt_B_kWh", "SOC", "Min_SOC", "Days_since_full","CHG_parms_met", "In_AH_today", "Out_AH_today", "In_kWh_today", "Out_kWh_today", "Net_CFC_AH", "Net_CFC_kWh", "Batt_V", "Batt_temp"]
 chargeController = ["Out_I", "In_I", "Batt_V", "In_V", "Out_kWh", "Out_AH"]
 inverter = ["Inv_I", "Chg_I", "Buy_I", "Sell_I", "VAC_in", "VAC_out", "Batt_V"]
@@ -41,15 +40,15 @@ def addmate3data(jsonFile):
                         tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
                     else:
                         tmpBatt[battery[x]] = 0
-                jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
+                jsonFile['Battery'][battery[x]] = tmpBatt[battery[x]]
         for x in range(0, len(chargeController)):
             if tmpMCC:
-                jsonFile.ChargeControllerM[chargeController[x]] = tmpMCC[chargeController[x]]
+                jsonFile['ChargeControllerM'][chargeController[x]] = tmpMCC[chargeController[x]]
             if tmpPCC:
-                jsonFile.ChargeControllerP[chargeController[x]] = tmpPCC[chargeController[x]]
+                jsonFile['ChargeControllerP'][chargeController[x]] = tmpPCC[chargeController[x]]
         if tmpInv:
             for x in range(0, len(inverter)):
-                jsonFile.Inverter[inverter[x]] = tmpInv[inverter[x]]
+                jsonFile['Inverter'][inverter[x]] = tmpInv[inverter[x]]
 
     except requests.exceptions.RequestException as e:
         print e
