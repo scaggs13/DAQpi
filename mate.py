@@ -2,7 +2,7 @@ import json
 import labjack as lj
 import requests
 
-mateIP = '192.168.0.64'
+mateIP = '173.218.91.129:3000'
 httpCall = 'http://' + mateIP + '/Dev_status.cgi'
 PARAMS = {'Port': 0}
 
@@ -18,21 +18,30 @@ def addmate3data(jsonFile):
     try:
         r = requests.get(url=httpCall, params=PARAMS)
         data = r.json
+        print data
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
-        tmpBatt = data['ports'][0] # Battery
-        tmpPCC = data['ports'][1] # Poly Charge Controller
-        tmpMCC = data['ports'][2] # Mono Charge Controller
-        tmpInv = data['ports'][3] # Inverter
-        for x in range(0, len(battery) - 1):
-            if battery[x] == "Batt_temp":
-                tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
-            jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
+        if data['ports']['4']:
+            tmpBatt = data['ports']['4'] # Battery
+        if data['ports']['3']:
+            tmpPCC = data['ports']['3'] # Poly Charge Controller
+        if data['ports']['2']:
+            tmpMCC = data['ports']['2'] # Mono Charge Controller
+        if data['ports']['1']:
+            tmpInv = data['ports']['1'] # Inverter
+        if tmpBatt:
+            for x in range(0, len(battery) - 1):
+                if battery[x] == "Batt_temp":
+                    tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
+                jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
         for x in range(0, len(chargeController)):
-            jsonFile.ChargeControllerM[chargeController[x]] = tmpMCC[chargeController[x]]
-            jsonFile.ChargeControllerP[chargeController[x]] = tmpPCC[chargeController[x]]
-        for x in range(0, len(inverter)):
-            jsonFile.Inverter[inverter[x]] = tmpInv[inverter[x]]
+            if tmpMCC:
+                jsonFile.ChargeControllerM[chargeController[x]] = tmpMCC[chargeController[x]]
+            if tmpPCC:
+                jsonFile.ChargeControllerP[chargeController[x]] = tmpPCC[chargeController[x]]
+        if tmpInv:
+            for x in range(0, len(inverter)):
+                jsonFile.Inverter[inverter[x]] = tmpInv[inverter[x]]
 
     except requests.exceptions.RequestException as e:
         print e
@@ -42,6 +51,6 @@ def addmate3data(jsonFile):
             jsonFile['ChargeControllerM'][chargeController[x]] = 0.0
         for x in range(len(inverter)):
             jsonFile['Inverter'][inverter[x]] = 0
-
+    print(jsonFile)
     json_data = json.dumps(jsonFile)
     lj.ws.send_solar(json_data)
