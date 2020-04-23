@@ -39,6 +39,8 @@ def addmate3data(jsonFile):
                     else:
                         tmpBatt[battery[x]] = 0
                 jsonFile['Battery'][battery[x]] = tmpBatt[battery[x]]
+                print(jsonFile)
+            print(jsonFile)
         for x in range(0, len(chargeController)):
             if tmpMCC:
                 jsonFile['ChargeControllerM'][chargeController[x]] = tmpMCC[chargeController[x]]
