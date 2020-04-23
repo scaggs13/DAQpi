@@ -17,7 +17,7 @@ def addmate3data(jsonFile):
     jsonFile['Inverter'] = {}
     try:
         r = requests.get(url=httpCall, params=PARAMS)
-        data = r.json
+        data = r.content.json
         print data
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
@@ -34,6 +34,8 @@ def addmate3data(jsonFile):
                 if battery[x] == "Batt_temp":
                     if tmpBatt[battery[x]] != "###":
                         tmpBatt[battery[x]] = float(tmpBatt[battery[x]].replace(' C',''))
+                    else:
+                        tmpBatt[battery[x]] = 0
                 jsonFile.Battery[battery[x]] = tmpBatt[battery[x]]
         for x in range(0, len(chargeController)):
             if tmpMCC:
