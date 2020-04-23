@@ -41,14 +41,25 @@ def addmate3data(jsonFile):
                     else:
                         tmpBatt[battery[x]] = 0
                 jsonFile['Battery'][battery[x]] = tmpBatt[battery[x]]
+        else:
+            jsonFile['Battery'] = {"Shunt_A_I": 0, "Shunt_A_AH": 0, "Shunt_A_kWh": 0.0, "SOC": 0, "Min_SOC": 0, "Days_since_full": 0.0,"CHG_parms_met": False, "In_AH_today": 0, "Out_AH_today": 0, "In_kWh_today": 0.0, "Out_kWh_today": 0.0, "Net_CFC_AH": 0, "Net_CFC_kWh": 0.0, "Batt_V": 0.0, "Batt_temp": 0.0}
         for x in range(0, len(chargeController)):
             if 'tmpMCC' in locals():
                 jsonFile['ChargeControllerM'][chargeController[x]] = tmpMCC[chargeController[x]]
+            else:
+                for x in range(len(chargeController)):
+                    jsonFile['ChargeControllerM'][chargeController[x]] = 0.0
             if 'tmpPCC' in locals():
                 jsonFile['ChargeControllerP'][chargeController[x]] = tmpPCC[chargeController[x]]
+            else:
+                for x in range(len(chargeController)):
+                    jsonFile['ChargeControllerP'][chargeController[x]] = 0.0
         if 'tmpInv' in locals():
             for x in range(0, len(inverter)):
                 jsonFile['Inverter'][inverter[x]] = tmpInv[inverter[x]]
+        else:
+            for x in range(len(inverter)):
+                jsonFile['Inverter'][inverter[x]] = 0.0
         print(jsonFile)
     except requests.exceptions.RequestException as e:
         print e
