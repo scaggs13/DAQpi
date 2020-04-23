@@ -20,6 +20,8 @@ def addmate3data(jsonFile):
         data = json.dumps(r.content)
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
+        print(data)
+        print(data[0])
         print(data['ports'])
         for x in range(0, len(data['ports'])):
             if data['ports'][x]['Port'] == 4:
