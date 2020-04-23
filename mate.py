@@ -21,27 +21,18 @@ def addmate3data(jsonFile):
         data = r.json()
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
-        for x in range(0, len(data)):
-            print x
         for x in range(0, len(data['devstatus']['ports'])):
             if data['devstatus']['ports'][x]['Port'] == 4:
                 tmpBatt = data['devstatus']['ports'][x]  # Battery
-            else:
-                tmpBatt = None
             if data['devstatus']['ports'][x]['Port'] == 3:
                 tmpPCC = data['devstatus']['ports'][x]  # Poly Charge Controller
-            else:
-                tmpPCC = None
             if data['devstatus']['ports'][x]['Port'] == 2:
                 tmpMCC = data['devstatus']['ports'][x]  # Mono Charge Controller
-            else:
-                tmpMCC = None
             if data['devstatus']['ports'][x]['Port'] == 1:
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
-            else:
-                tmpInv = None
-        print(tmpPCC)
-        if tmpBatt is not None:
+        print(tmpMCC)
+        print(tmpInv)
+        if 'tmpBatt' in locals():
             print(len(battery))
             for x in range(0, len(battery)):
                 if battery[x] == "Batt_temp":
@@ -51,11 +42,11 @@ def addmate3data(jsonFile):
                         tmpBatt[battery[x]] = 0
                 jsonFile['Battery'][battery[x]] = tmpBatt[battery[x]]
         for x in range(0, len(chargeController)):
-            if tmpMCC is not None:
+            if 'tmpMCC' in locals():
                 jsonFile['ChargeControllerM'][chargeController[x]] = tmpMCC[chargeController[x]]
-            if tmpPCC is not None:
+            if 'tmpPCC' in locals():
                 jsonFile['ChargeControllerP'][chargeController[x]] = tmpPCC[chargeController[x]]
-        if tmpInv is not None:
+        if 'tmpInv' in locals():
             for x in range(0, len(inverter)):
                 jsonFile['Inverter'][inverter[x]] = tmpInv[inverter[x]]
         print(jsonFile)
