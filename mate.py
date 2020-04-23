@@ -22,7 +22,7 @@ def addmate3data(jsonFile):
         # Change the port number to match the corresponding object.
         print(data)
         print(data[0])
-        print(data['ports'])
+        print(data.ports)
         for x in range(0, len(data['ports'])):
             if data['ports'][x]['Port'] == 4:
                 tmpBatt = data['ports'][x]  # Battery
