@@ -9,6 +9,7 @@ while True:
     # If solar uncomment the if statement below and comment out the bottom if statement.
     if lj.open_labjacks():
         lj.ws.send_err('')
+        lj.ws.connect_solar()
         startTime=time.time()
         while lj.dp_connect and lj.dm_connect: # todo: run this file on startup? Do I need a main?
             # todo: error checking. if labjacks unplugged (retry duration) if websocket can't connect ...
@@ -21,6 +22,7 @@ while True:
     # If wind uncomment the if statement below and comment out the if statement above.
     if wlj.open_labjacks():
         wlj.ws.send_err('')
+        wlj.ws.connect_wind()
         startTime=time.time()
         while wlj.d2_connect and wlj.d1_connect: # todo: run this file on startup? Do I need a main?
             # todo: error checking. if labjacks unplugged (retry duration) if websocket can't connect ...

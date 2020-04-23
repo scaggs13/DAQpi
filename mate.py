@@ -37,10 +37,10 @@ def addmate3data(jsonFile):
     except requests.exceptions.RequestException as e:
         print e
         jsonFile['Battery'] = {"Shunt_A_I": 0, "Shunt_A_AH": 0, "Shunt_A_kWh": 0.0, "Shunt_B_I": 0.0, "Shunt_B_AH": 0, "Shunt_B_kWh": 0.000, "SOC": 0, "Min_SOC": 0, "Days_since_full": 0.0,"CHG_parms_met": False, "In_AH_today": 0, "Out_AH_today": 0, "In_kWh_today": 0.0, "Out_kWh_today": 0.0, "Net_CFC_AH": 0, "Net_CFC_kWh": 0.0, "Batt_V": 0.0, "Batt_temp": 0.0}
-        for x in range(len(chargeController) - 1):
+        for x in range(len(chargeController)):
             jsonFile['ChargeControllerP'][chargeController[x]] = 0.0
             jsonFile['ChargeControllerM'][chargeController[x]] = 0.0
-        for x in range(len(inverter) - 1):
+        for x in range(len(inverter)):
             jsonFile['Inverter'][inverter[x]] = 0
 
     json_data = json.dumps(jsonFile)

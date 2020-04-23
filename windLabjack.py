@@ -107,8 +107,8 @@ def collect_data():
             for x in data_load:
                 data_load[x] = tmp_load[ORDER_LOAD.index(x)]
 
-            tmp_json = {"P31_V": tmp_3phase[0], "P32_V": tmp_3phase[1], "P33_V": tmp_3phase[2], "A3": tmp_3phase[3], "P31_I": tmp_3phase[4], "P32_I": tmp_3phase[5], "P33_I": tmp_3phase[6], "F7": tmp_3phase[07],
-                        "Load_V": tmp_load[0], "Batt_V": tmp_load[1], "A2": tmp_load[2], "A3": tmp_load[3], "Load_I": tmp_load[4], "Batt_I": tmp_load[5], "F6": tmp_load[6], "F7": tmp_load[7]}
+            tmp_json = {"P31_V": tmp_3phase[0], "P32_V": tmp_3phase[1], "P33_V": tmp_3phase[2], "P31_I": tmp_3phase[4], "P32_I": tmp_3phase[5], "P33_I": tmp_3phase[6],
+                        "Load_V": tmp_load[0], "Batt_V": tmp_load[1],  "Load_I": tmp_load[4], "Batt_I": tmp_load[5]}
             # Dump JSON
             json_data = json.dumps(tmp_json)
             ws.send_wind(json_data)
