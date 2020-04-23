@@ -17,7 +17,7 @@ def addmate3data(jsonFile):
     jsonFile['Inverter'] = {}
     try:
         r = requests.get(url=httpCall, params=PARAMS)
-        data = json.dumps(r.content)
+        data = json.loads(r.content)
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
         print(data)
