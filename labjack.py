@@ -117,8 +117,8 @@ def collect_data_panels():
             # Clear temp lists
             del tmp_poly[:]
             del tmp_mono[:]
-        except:
-            print("error")
+        except Exception as e:
+            print(e)
             try:
                 dp.getAIN(0)
             except:
