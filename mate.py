@@ -21,14 +21,14 @@ def addmate3data(jsonFile):
         print data
         # Fetch all of these from the Mate 3s
         # Change the port number to match the corresponding object.
-        if data['ports']['4']:
-            tmpBatt = data['ports']['4'] # Battery
-        if data['ports']['3']:
-            tmpPCC = data['ports']['3'] # Poly Charge Controller
-        if data['ports']['2']:
-            tmpMCC = data['ports']['2'] # Mono Charge Controller
-        if data['ports']['1']:
-            tmpInv = data['ports']['1'] # Inverter
+        if data['ports'][4]:
+            tmpBatt = data['ports'][4] # Battery
+        if data['ports'][3]:
+            tmpPCC = data['ports'][3] # Poly Charge Controller
+        if data['ports'][2]:
+            tmpMCC = data['ports'][2] # Mono Charge Controller
+        if data['ports'][1]:
+            tmpInv = data['ports'][1] # Inverter
         if tmpBatt:
             for x in range(0, len(battery) - 1):
                 if battery[x] == "Batt_temp":
