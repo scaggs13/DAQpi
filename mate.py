@@ -26,12 +26,20 @@ def addmate3data(jsonFile):
         for x in range(0, len(data['devstatus']['ports'])):
             if data['devstatus']['ports'][x]['Port'] == 4:
                 tmpBatt = data['devstatus']['ports'][x]  # Battery
+            else:
+                tmpBatt = None
             if data['devstatus']['ports'][x]['Port'] == 3:
                 tmpPCC = data['devstatus']['ports'][x]  # Poly Charge Controller
+            else:
+                tmpPCC = None
             if data['devstatus']['ports'][x]['Port'] == 2:
                 tmpMCC = data['devstatus']['ports'][x]  # Mono Charge Controller
+            else:
+                tmpMCC = None
             if data['devstatus']['ports'][x]['Port'] == 1:
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
+            else:
+                tmpInv = None
         if tmpBatt:
             print(len(battery))
             for x in range(0, len(battery)):
