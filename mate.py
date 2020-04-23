@@ -40,7 +40,8 @@ def addmate3data(jsonFile):
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
             else:
                 tmpInv = None
-        if tmpBatt:
+        print(tmpPCC)
+        if tmpBatt is not None:
             print(len(battery))
             for x in range(0, len(battery)):
                 if battery[x] == "Batt_temp":
@@ -49,13 +50,12 @@ def addmate3data(jsonFile):
                     else:
                         tmpBatt[battery[x]] = 0
                 jsonFile['Battery'][battery[x]] = tmpBatt[battery[x]]
-            print(jsonFile)
         for x in range(0, len(chargeController)):
-            if tmpMCC:
+            if tmpMCC is not None:
                 jsonFile['ChargeControllerM'][chargeController[x]] = tmpMCC[chargeController[x]]
-            if tmpPCC:
+            if tmpPCC is not None:
                 jsonFile['ChargeControllerP'][chargeController[x]] = tmpPCC[chargeController[x]]
-        if tmpInv:
+        if tmpInv is not None:
             for x in range(0, len(inverter)):
                 jsonFile['Inverter'][inverter[x]] = tmpInv[inverter[x]]
         print(jsonFile)
