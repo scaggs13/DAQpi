@@ -30,10 +30,7 @@ def addmate3data(jsonFile):
                 tmpMCC = data['devstatus']['ports'][x]  # Mono Charge Controller
             if data['devstatus']['ports'][x]['Port'] == 1:
                 tmpInv = data['devstatus']['ports'][x]  # Inverter
-        print(tmpMCC)
-        print(tmpInv)
         if 'tmpBatt' in locals():
-            print(len(battery))
             for x in range(0, len(battery)):
                 if battery[x] == "Batt_temp":
                     if tmpBatt[battery[x]] != "###":
