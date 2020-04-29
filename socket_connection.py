@@ -5,7 +5,7 @@ sio = socketio.Client();
 connected = False;
 while not connected:
     try:
-        sio.connect("http://50.17.173.72:3000")
+        sio.connect("http://54.152.56.41:3000")
         #sio.connect("http://localhost:3000")
         connected = True;
     except socketio.exceptions.ConnectionError:
